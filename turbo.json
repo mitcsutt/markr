@@ -1,6 +1,30 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
+  "globalEnv": ["DATABASE_URL", "NODE_ENV"],
   "tasks": {
+    "lint": {
+      "outputs": [".eslintcache"]
+    },
+    "check": {},
+    "db:generate": {
+      "cache": false
+    },
+    "db:deploy": {
+      "cache": false,
+      "dependsOn": ["db:generate"]
+    },
+    "db:migrate": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:seed": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:reset": {
+      "cache": false,
+      "persistent": true
+    }
   }
 }
