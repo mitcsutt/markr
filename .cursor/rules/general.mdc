@@ -1,0 +1,31 @@
+---
+description: General project guidelines and conventions for the Markr monorepo
+globs: 
+alwaysApply: true
+---
+
+# Markr Project Overview
+
+Markr is a test results ingestion and analytics microservice. It receives XML test results from legacy grading machines, stores them persistently, and provides aggregate statistics for visualization.
+
+## Monorepo Structure (Turborepo)
+
+- `apps/api` - Express REST API server
+- `packages/db` - Database access layer (Prisma + PostgreSQL)
+- `packages/eslint-config` - Shared ESLint configuration
+- `packages/typescript-config` - Shared TypeScript configuration
+
+## Key Technologies
+
+- **Runtime**: Node.js with TypeScript
+- **API Framework**: Express
+- **Database**: PostgreSQL
+- **ORM**: Prisma with generated types
+- **Monorepo**: Turborepo with pnpm workspaces
+
+## Naming Conventions
+
+- TypeScript types/interfaces: `PascalCase`
+- Variables and functions: `camelCase`
+- Database tables: `PascalCase` (Prisma convention)
+- REST endpoints: `kebab-case` paths

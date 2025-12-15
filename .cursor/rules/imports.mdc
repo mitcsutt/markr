@@ -1,0 +1,87 @@
+---
+description: Import conventions and module resolution patterns
+globs: 
+alwaysApply: true
+---
+
+# Import Conventions
+
+## No Barrel Files
+
+**Do not use barrel files** (index.ts files that only re-export other modules).
+
+### Exceptions
+
+- Application entry points (e.g., `apps/api/src/index.ts`) are fine - these are actual app entry points, not barrels
+
+### Why
+
+- Barrel files create circular dependency risks
+- They obscure the actual source of imports
+- They can cause unnecessary bundling of unused code
+- Direct imports are more explicit and traceable
+
+## Package Exports
+
+Use `package.json` exports field to define public API for external consumers:
+
+```json
+{
+  "exports": {
+    "./data/*": "./src/data/*.ts",
+    "./types": "./prisma/generated/client.ts"
+  }
+}
+```
+
+## Subpath Imports
+
+Use `package.json` imports field for internal imports within a package:
+
+```json
+{
+  "imports": {
+    "#controllers/*": "./src/controllers/*.ts",
+    "#services/*": "./src/services/*.ts"
+  }
+}
+```
+
+## Import Patterns
+
+### Importing from other packages
+
+```typescript
+// Data access functions
+import * as {entity} from '@repo/db/data/{entity}';
+
+// Types
+import type { Entity } from '@repo/db/types';
+```
+
+### Importing within the same package
+
+**Relative imports** are fine for neighbours or children:
+
+```typescript
+// Good - sibling/child imports
+import { prisma } from './client';
+import { helper } from './utils/helper';
+```
+
+**Subpath imports** are preferred when navigating between root directories:
+
+```typescript
+// Good - crossing root directories (e.g., from controllers/ to services/)
+import { someService } from '#services/someService';
+
+// Bad - deep relative paths across root directories
+import { someService } from '../services/someService';
+```
+
+### Never use barrel imports
+
+```typescript
+// Bad - barrel imports
+import { {entity}Controller } from './controllers';
+```

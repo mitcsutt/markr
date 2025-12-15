@@ -1,0 +1,68 @@
+---
+description: API design patterns and controller conventions for the Express server
+globs: apps/api/**/*
+alwaysApply: false
+---
+
+# API Package Guidelines
+
+## Directory Structure
+
+```
+apps/api/src/
+├── index.ts              # App setup, middleware, route mounting
+└── controllers/
+    └── {controller}.ts   # Routes for a specific resource
+```
+
+## Controller Pattern
+
+Each controller is an Express Router handling routes for a specific resource:
+
+```typescript
+// apps/api/src/controllers/{entity}.ts
+import * as {entity} from '@repo/db/data/{entity}';
+import { Router, type Router as RouterType } from 'express';
+
+const router: RouterType = Router();
+
+router.get('/', async (req, res) => {
+  const items = await {entity}.get{Entity}();
+  res.json(items);
+});
+
+router.get('/:id', async (req, res) => {
+  const item = await {entity}.get{Entity}ById(Number(req.params.id));
+  if (!item) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+  res.json(item);
+});
+
+export default router;
+```
+
+## Mounting Controllers
+
+Import controllers directly (no barrel files):
+
+```typescript
+// apps/api/src/index.ts
+import {entity}Controller from './controllers/{entity}';
+
+app.use('/{entity}', {entity}Controller);
+```
+
+## API Design Rules
+
+- Use `kebab-case` for URL paths
+- Return JSON responses
+- Use appropriate HTTP status codes
+- Validate all incoming data
+- Reject entire documents on validation failure (atomic operations)
+
+## Error Handling
+
+- Return appropriate HTTP error codes
+- Log errors for debugging
+- Never expose internal error details to clients

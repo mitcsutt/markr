@@ -1,0 +1,71 @@
+---
+description: Database access patterns and conventions for the @repo/db package
+globs: packages/db/**/*
+alwaysApply: false
+---
+
+# Database Package Guidelines
+
+## Core Principle
+
+**Never export the Prisma client directly.** All database access must go through data access functions.
+
+## Directory Structure
+
+```
+packages/db/
+├── package.json       # Exports defined here (no barrel files)
+├── src/
+│   ├── client.ts      # Internal Prisma client (NOT exported)
+│   └── data/
+│       └── {entity}.ts
+└── prisma/
+    └── generated/     # Prisma generated types
+```
+
+## Package Exports
+
+Defined in `package.json`:
+
+```json
+{
+  "exports": {
+    "./data/*": "./src/data/*.ts",
+    "./types": "./prisma/generated/client.ts"
+  }
+}
+```
+
+## Data Access Functions
+
+- Place in `packages/db/src/data/` organized by entity
+- Use `camelCase` naming (e.g., `getStudents`, `createSubmission`)
+- Import prisma from `../client` (internal only)
+
+### Example Pattern
+
+```typescript
+// packages/db/src/data/{entity}.ts
+import { prisma } from '../client';
+
+export async function get{Entity}() {
+  return prisma.{entity}.findMany();
+}
+
+export async function get{Entity}ById(id: number) {
+  return prisma.{entity}.findUnique({ where: { id } });
+}
+
+export async function create{Entity}(data: CreateInput) {
+  return prisma.{entity}.create({ data });
+}
+```
+
+## Usage in Applications
+
+```typescript
+import * as {entity} from '@repo/db/data/{entity}';
+import type { Entity } from '@repo/db/types';
+
+const items = await {entity}.get{Entity}();
+```
