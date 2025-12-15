@@ -2,6 +2,7 @@
   "name": "markr",
   "private": true,
   "scripts": {
+    "compose:up": "docker compose -f docker-compose.yml up --build -d"
   },
   "devDependencies": {
 		"turbo": "^2.6.3"
