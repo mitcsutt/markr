@@ -1,6 +1,20 @@
 version: "3.7"
 
 services:
+  api:
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true # Keeps the container running for debugging
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./apps/api/.env
+
   postgres:
     image: postgres:15
     restart: always
@@ -24,6 +38,7 @@ services:
         max-file: "3"
 
   # https://www.prisma.io/docs/guides/docker#35-bonus-add-prisma-studio-for-database-management
+  # TODO: Separate this out to a separate docker compose up, so it's only ran in development mode
   prisma-studio:
     image: node:25-alpine3.22
     working_dir: /usr/src/app
@@ -35,6 +50,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      api:
+        condition: service_started
 
 volumes:
   postgres_data:
