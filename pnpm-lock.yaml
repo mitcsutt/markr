@@ -15,7 +15,24 @@ importers:
         specifier: ^2.6.3
         version: 2.6.3
 
-  apps/api: {}
+  apps/api:
+    dependencies:
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.2(jiti@2.6.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
 
   packages/db:
     dependencies:
