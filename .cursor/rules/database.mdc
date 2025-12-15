@@ -8,7 +8,7 @@ alwaysApply: false
 
 ## Core Principle
 
-**Never export the Prisma client directly.** All database access must go through data access functions.
+**Never export the Prisma client directly.** All database access must go through model or service functions.
 
 ## Directory Structure
 
@@ -17,55 +17,79 @@ packages/db/
 ├── package.json       # Exports defined here (no barrel files)
 ├── src/
 │   ├── client.ts      # Internal Prisma client (NOT exported)
-│   └── data/
-│       └── {entity}.ts
+│   ├── models/
+│   │   └── {entity}.ts   # Single-entity CRUD operations
+│   ├── services/
+│   │   └── {feature}.ts  # Multi-entity business logic
+│   └── validators/
+│       └── {entity}.ts   # Zod schemas for validation
 └── prisma/
-    └── generated/     # Prisma generated types
+    └── generated/        # Prisma generated types
 ```
 
-## Package Exports
+## Models vs Services
 
-Defined in `package.json`:
+- **Models** (`models/`): Single-entity operations, batch-friendly, pure CRUD
+- **Services** (`services/`): Cross-entity orchestration, transactions, business logic
+
+## Package Exports
 
 ```json
 {
   "exports": {
-    "./data/*": "./src/data/*.ts",
+    "./models/*": "./src/models/*.ts",
+    "./services/*": "./src/services/*.ts",
+    "./validators/*": "./src/validators/*.ts",
     "./types": "./prisma/generated/client.ts"
   }
 }
 ```
 
-## Data Access Functions
+## Model Pattern
 
-- Place in `packages/db/src/data/` organized by entity
-- Use `camelCase` naming (e.g., `getStudents`, `createSubmission`)
-- Import prisma from `../client` (internal only)
-
-### Example Pattern
+Optimized for batch operations to avoid N+1 queries:
 
 ```typescript
-// packages/db/src/data/{entity}.ts
+// packages/db/src/models/{entity}.ts
 import { prisma } from '../client';
 
-export async function get{Entity}() {
-  return prisma.{entity}.findMany();
+export async function upsert{Entity}s(inputs: Input[]): Promise<Map<string, Entity>> {
+  const unique = [...new Map(inputs.map(i => [i.key, i])).values()];
+  
+  const results = await Promise.all(
+    unique.map(input => prisma.{entity}.upsert({
+      where: { key: input.key },
+      update: { ... },
+      create: input,
+      select: { id: true, key: true },
+    }))
+  );
+  
+  return new Map(results.map(r => [r.key, r]));
 }
+```
 
-export async function get{Entity}ById(id: number) {
-  return prisma.{entity}.findUnique({ where: { id } });
-}
+## Service Pattern
 
-export async function create{Entity}(data: CreateInput) {
-  return prisma.{entity}.create({ data });
+Orchestrates multiple models in a transaction:
+
+```typescript
+// packages/db/src/services/{feature}.ts
+import { prisma } from '../client';
+import { upsert{Entity}s } from '../models/{entity}';
+
+export async function import{Feature}(data: Input[]) {
+  return prisma.$transaction(async () => {
+    const entityMap = await upsert{Entity}s(data);
+    // ... more operations
+    return results;
+  });
 }
 ```
 
 ## Usage in Applications
 
 ```typescript
-import * as {entity} from '@repo/db/data/{entity}';
-import type { Entity } from '@repo/db/types';
-
-const items = await {entity}.get{Entity}();
+import { importTestResults } from '@repo/db/services/import';
+import { TestResultSchema } from '@repo/db/validators/submission';
 ```

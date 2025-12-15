@@ -11,8 +11,12 @@ alwaysApply: false
 ```
 apps/api/src/
 ├── index.ts              # App setup, middleware, route mounting
-└── controllers/
-    └── {controller}.ts   # Routes for a specific resource
+├── constants/
+│   └── index.ts         # Shared constants
+├── controllers/
+│   └── {controller}.ts   # Routes for a specific resource
+└── utils/
+    └── {utility}.ts      # Pure functions, easily testable
 ```
 
 ## Controller Pattern
@@ -51,6 +55,16 @@ Import controllers directly (no barrel files):
 import {entity}Controller from './controllers/{entity}';
 
 app.use('/{entity}', {entity}Controller);
+```
+
+## Internal Imports
+
+Use subpath imports when crossing root directories:
+
+```typescript
+import { MARKR_CONTENT_TYPE } from '#src/constants';
+import { parseTestResults } from '#utils/xml';
+import { badRequest, validationError } from '#utils/responses';
 ```
 
 ## API Design Rules

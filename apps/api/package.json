@@ -6,11 +6,15 @@
   "scripts": {
     "lint": "eslint . --max-warnings 0",
     "check": "tsc --noEmit",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@repo/db": "workspace:*",
-    "express": "5.1.0"
+    "express": "5.1.0",
+    "fast-xml-parser": "^5.3.0",
+    "zod": "^3.24.0"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "^1.51.2",
@@ -21,9 +25,12 @@
     "tsx": "^4.20.6",
     "eslint": "^9.39.1",
     "prettier": "^3.7.4",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "imports": {
-    "#controllers/*": "./src/controllers/*.ts"
+    "#controllers/*": "./src/controllers/*.ts",
+    "#utils/*": "./src/utils/*.ts",
+    "#src/*": "./src/*.ts"
   }
 }

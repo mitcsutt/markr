@@ -6,6 +6,8 @@
   "scripts": {
     "lint": "eslint . --max-warnings 0",
     "check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "db:generate": "pnpm prisma generate",
     "db:deploy": "pnpm prisma migrate deploy",
     "db:migrate": "pnpm prisma migrate dev -- --skip-generate",
@@ -15,7 +17,8 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.1.0",
     "@prisma/client": "^7.1.0",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "zod": "^3.24.0"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "^1.51.2",
@@ -25,14 +28,16 @@
     "eslint": "^9.39.1",
     "prettier": "^3.7.4",
     "prisma": "^7.1.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "exports": {
-    "./data/*": "./src/data/*.ts",
+    "./models/*": "./src/models/*.ts",
+    "./services/*": "./src/services/*.ts",
+    "./validators/*": "./src/validators/*.ts",
     "./types": "./prisma/generated/client.ts"
   },
   "imports": {
-    "#prisma/*": "./prisma/*.ts",
-    "#controllers/*": "./src/controllers/*.ts"
+    "#prisma/*": "./prisma/*.ts"
   }
 }
