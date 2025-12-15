@@ -8,13 +8,36 @@ datasource db {
 }
 
 model Student {
-  id Int @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
+  studentNumber String       @unique
+  firstName     String
+  lastName      String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  submissions   Submission[]
 }
 
 model Test {
-  id Int @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
+  testId      String       @unique
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  submissions Submission[]
 }
 
 model Submission {
-  id Int @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
+  student    Student  @relation(fields: [studentId], references: [id])
+  studentId  Int
+  test       Test     @relation(fields: [testId], references: [id])
+  testId     Int
+  obtained   Int
+  available  Int
+  scannedOn  DateTime
+  rawPayload Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // https://www.prisma.io/docs/orm/reference/prisma-schema-reference#unique-1
+  @@unique([studentId, testId])
 }
