@@ -2,10 +2,11 @@
   "name": "@repo/api",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "lint": "eslint . --max-warnings 0",
     "check": "tsc --noEmit",
-     "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts"
   },
   "dependencies": {
     "@repo/db": "workspace:*",
@@ -21,5 +22,8 @@
     "eslint": "^9.39.1",
     "prettier": "^3.7.4",
     "typescript": "^5.9.2"
+  },
+  "imports": {
+    "#controllers/*": "./src/controllers/*.ts"
   }
 }

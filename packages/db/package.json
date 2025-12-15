@@ -28,6 +28,11 @@
     "typescript": "^5.9.2"
   },
   "exports": {
-    ".": "./src/index.ts"
+    "./data/*": "./src/data/*.ts",
+    "./types": "./prisma/generated/client.ts"
+  },
+  "imports": {
+    "#prisma/*": "./prisma/*.ts",
+    "#controllers/*": "./src/controllers/*.ts"
   }
 }

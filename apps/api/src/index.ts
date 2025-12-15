@@ -1,6 +1,6 @@
 import { config } from '@dotenvx/dotenvx';
-import { prisma } from '@repo/db';
 import express from 'express';
+import studentsController from './controllers/students';
 
 // Load .env
 config({ convention: 'nextjs' });
@@ -9,10 +9,8 @@ const app = express();
 
 app.use(express.json());
 
-app.get('/students', async (req, res) => {
-  const users = await prisma.student.findMany();
-  res.json(users);
-});
+// Routes
+app.use('/students', studentsController);
 
 app.listen(3000, () =>
   console.log(`
