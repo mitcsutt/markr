@@ -12,6 +12,7 @@
     "db:reset": "turbo run db:reset",
     "compose:up": "./scripts/compose-up.sh",
     "compose:down": "./scripts/compose-down.sh",
+    "studio": "./scripts/studio.sh",
     "prepare": "husky",
     "husky:push": "turbo run lint check"
   },

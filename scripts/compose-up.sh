@@ -1,5 +1,5 @@
 #!/bin/bash
-# Start PostgreSQL container and wait for it to be healthy
+# Start API + PostgreSQL (postgres starts via depends_on)
 
-docker compose up --build -d
+docker compose up api --build -d
 

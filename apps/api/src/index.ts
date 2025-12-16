@@ -11,7 +11,8 @@ const app = express();
 app.use(express.json());
 
 // Parse XML bodies for the import endpoint
-app.use(express.text({ type: 'text/xml+markr' }));
+// Increased limit for large batch imports (sample file is ~150KB)
+app.use(express.text({ type: 'text/xml+markr', limit: '1mb' }));
 
 // Routes
 app.use(routes);

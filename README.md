@@ -2,12 +2,29 @@
 
 Test results ingestion and analytics microservice.
 
-## Quick Start
+## Getting Started
+
+### Prerequisites
+
+```bash
+# Install Node.js via nvm (https://github.com/nvm-sh/nvm)
+nvm install
+nvm use
+
+# Install pnpm (https://pnpm.io/installation)
+corepack enable
+corepack prepare pnpm@latest --activate
+```
+
+### Running the app
 
 ```bash
 pnpm install
-pnpm dev        # Starts Postgres, generates schema, runs migrations, starts API
+pnpm dev        # Starts Postgres + API, generates schema, runs migrations
+pnpm studio     # (Optional) Starts Prisma Studio on localhost:5555
 ```
+
+API runs at `http://localhost:3000`. Use the `api.http` file with VS Code REST Client extension to test endpoints.
 
 ### Other Commands
 
@@ -15,6 +32,20 @@ pnpm dev        # Starts Postgres, generates schema, runs migrations, starts API
 pnpm db:migrate # Create a new migration (dev only)
 pnpm db:seed    # Seed the database
 pnpm db:reset   # Nuke and rebuild the database
+```
+
+### Alternative: Direct Docker/Scripts
+
+Skip pnpm and use Docker directly:
+
+```bash
+# Start API + Postgres
+docker compose up api --build -d
+
+# Or use the scripts
+./scripts/compose-up.sh    # Start API + Postgres
+./scripts/compose-down.sh  # Stop everything
+./scripts/studio.sh        # Start Prisma Studio
 ```
 
 ## Design Decisions
@@ -42,6 +73,8 @@ Input is validated with Zod schemas before hitting the DB. This theoretically du
 ### XML handling
 
 We check for the `mcq-test-results` root element to avoid accidentally processing other XML document types from the grading machines.
+
+**Body size limit:** Set to 1MB for XML imports. The sample batch file is ~150KB, so this handles large imports comfortably while still providing a reasonable upper bound.
 
 ### Storing extra fields as JSON
 
