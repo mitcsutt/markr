@@ -38,6 +38,32 @@ Build a server that:
 - Mean and percentile
   - How to calculate demonitoator for percentage?
 
+#### Aggregate
+
+For a given test-id, compute:
+  -	count
+  -	mean
+  -	p25 / p50 / p75
+(all as percentages of available marks)
+
+Concerns:
+  - Data arrives incrementally
+  - Submissions may be duplicated
+  - Available marks may change (take max)
+  - Aggregate does not need to be fast right now
+  - But might need to be real-time later
+
+Approach:
+- Query all relevant rows
+- Compute the stats in TS
+- Return the result
+- If no matching testId, throw error
+- If no test submissions, return empty analytics (request was successful just nothing to show yet)
+
+Concerns:
+  - O(n) per request
+  - Won't scale with lots of data or high requests
+
 ## Tech
 
 ### Database
@@ -93,4 +119,4 @@ prisma
 
 ### Devtools
 
-Being that this is a ts monorepo, it means we can build in typescript and 
+Being that this is a ts monorepo, it means we can build in typescript

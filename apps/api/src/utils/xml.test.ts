@@ -20,25 +20,25 @@ describe('parseTestResults', () => {
       const results = parseTestResults(validXml);
 
       expect(results).toHaveLength(1);
-      expect(results[0].firstName).toBe('Jane');
-      expect(results[0].lastName).toBe('Doe');
-      expect(results[0].studentNumber).toBe('12345');
-      expect(results[0].testId).toBe('9863');
-      expect(results[0].obtained).toBe(15);
-      expect(results[0].available).toBe(20);
+      expect(results[0]!.firstName).toBe('Jane');
+      expect(results[0]!.lastName).toBe('Doe');
+      expect(results[0]!.studentNumber).toBe('12345');
+      expect(results[0]!.testId).toBe('9863');
+      expect(results[0]!.obtained).toBe(15);
+      expect(results[0]!.available).toBe(20);
     });
 
     it('parses scannedOn as Date', () => {
       const results = parseTestResults(validXml);
 
-      expect(results[0].scannedOn).toBeInstanceOf(Date);
+      expect(results[0]!.scannedOn).toBeInstanceOf(Date);
     });
 
     it('preserves raw payload', () => {
       const results = parseTestResults(validXml);
 
-      expect(results[0].rawPayload).toBeDefined();
-      expect(results[0].rawPayload['first-name']).toBe('Jane');
+      expect(results[0]!.rawPayload).toBeDefined();
+      expect(results[0]!.rawPayload!['first-name']).toBe('Jane');
     });
 
     it('parses multiple test results', () => {
@@ -65,8 +65,8 @@ describe('parseTestResults', () => {
       const results = parseTestResults(multiXml);
 
       expect(results).toHaveLength(2);
-      expect(results[0].firstName).toBe('Jane');
-      expect(results[1].firstName).toBe('John');
+      expect(results[0]!.firstName).toBe('Jane');
+      expect(results[1]!.firstName).toBe('John');
     });
   });
 
@@ -109,10 +109,10 @@ describe('parseTestResults', () => {
 
       const results = parseTestResults(minimalXml);
 
-      expect(results[0].firstName).toBe('');
-      expect(results[0].lastName).toBe('');
-      expect(results[0].studentNumber).toBe('');
-      expect(results[0].testId).toBe('');
+      expect(results[0]!.firstName).toBe('');
+      expect(results[0]!.lastName).toBe('');
+      expect(results[0]!.studentNumber).toBe('');
+      expect(results[0]!.testId).toBe('');
     });
 
     it('defaults missing marks to 0', () => {
@@ -130,8 +130,8 @@ describe('parseTestResults', () => {
 
       const results = parseTestResults(noMarksXml);
 
-      expect(results[0].obtained).toBe(0);
-      expect(results[0].available).toBe(0);
+      expect(results[0]!.obtained).toBe(0);
+      expect(results[0]!.available).toBe(0);
     });
   });
 });
