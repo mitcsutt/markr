@@ -24,7 +24,22 @@ pnpm dev        # Starts Postgres + API, generates schema, runs migrations
 pnpm studio     # (Optional) Starts Prisma Studio on localhost:5555
 ```
 
-API runs at `http://localhost:3000`. Use the `api.http` file with VS Code REST Client extension to test endpoints.
+### What's Running
+
+**API** — `http://localhost:3000`
+
+| Endpoint | Method | Content-Type | Description |
+|----------|--------|--------------|-------------|
+| `/import` | POST | `text/xml+markr` | Import test results from XML batch |
+| `/results/:test-id/aggregate` | GET | `application/json` | Get aggregate stats for a test |
+
+**Prisma Studio** — `http://localhost:5555` (after running `pnpm studio`)
+
+Visual database browser. Click through Students, Tests, and Submissions tables to inspect data. Useful for verifying imports worked correctly or debugging data issues.
+
+**PostgreSQL** — `localhost:5432`
+
+Direct DB access if needed. Credentials in `docker-compose.yml` (user: `markr`, password: `markr`, database: `markr`).
 
 ### Other Commands
 
@@ -113,6 +128,12 @@ Chose Vitest over Jest for speed — it's noticeably faster, especially in watch
 ### CI/CD
 
 Using Husky git hooks for linting and tests on push. In a team setting I'd protect `main` and require PRs, but couldn't justify the overhead solo. Felt weird pushing straight to main, but here we are.
+
+### Error logging
+
+The `PayloadTooLargeError` reminded me this app has no error tracking. If someone hits the 1MB limit, we'd never know unless they complained. In production I'd use Bugsnag or Datadog — something external that captures errors with stack traces, request context, and aggregation.
+
+Considered a DB logging table, but that couples error tracking to the app database. If the DB goes down, you can't log that the DB went down. External services also give you alerting, dashboards, and historical trends out of the box. For a test project, console logs are fine.
 
 ### Ports
 
