@@ -38,3 +38,7 @@ We store `rawPayload` directly on the `Submission` table rather than a separate 
 Papers sometimes get scanned twice (folded corners, etc). When we see the same student + test combo, we keep the highest score. The `@@unique([studentId, testId])` constraint enforces this at the database level.
 
 I considered using soft deletes to keep a history of superseded submissions, but decided against it. The duplicate scenario is an edge case caused by scanner issues — we care about the correct score, not a log of machine errors. Simpler is better here.
+
+### CI/CD approach
+
+In a real project I'd set up a pipeline (Buildkite, GitHub Actions, etc.) to validate PRs and enforce passing checks before merge. Since this is a solo dev project, I'm using Husky git hooks to run linting and tests on push — same safety net, less infrastructure.
